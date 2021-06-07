@@ -1,3 +1,4 @@
 built/
 .vscode/
 node_modules/
+tsconfig.tsbuildinfo
