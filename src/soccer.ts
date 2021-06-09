@@ -6,14 +6,15 @@
 //import * as MRE from '@microsoft/mixed-reality-extension-sdk';
 import {
 	Actor,AssetContainer, ButtonBehavior,
-	ColliderType, Context,Guid, PrimitiveShape, Vector3, User} from '@microsoft/mixed-reality-extension-sdk';
+	ColliderType, Context,Guid,
+	PrimitiveShape, Vector3, User} from '@microsoft/mixed-reality-extension-sdk';
 // import { type } from 'os';
 // import { Transform } from 'stream';
 
 /**
  * Clase principal de la aplicación. Aquí se resuelve todo.
  */
-export default class SoccerMatch {	
+export default class SoccerMAtch {	
 	public maxDistance2Kick = 2;
 	public kickForce = 5;
 	private assets: AssetContainer;
@@ -22,6 +23,7 @@ export default class SoccerMatch {
 	private pateador: ButtonBehavior;
 
 	constructor(private context: Context) {
+		console.log(`Constructror de Soccer`);
 		this.context.onStarted(() => this.started());
 	}
 

@@ -4,9 +4,11 @@
  */
 
 import * as MRE from '@microsoft/mixed-reality-extension-sdk';
+import { Context, ParameterSet } from '@microsoft/mixed-reality-extension-sdk';
+//import { observe } from '@microsoft/mixed-reality-extension-sdk/built/internal';
 import dotenv from 'dotenv';
 import { resolve as resolvePath } from 'path';
-import App from './app';
+import SoccerMatch from './soccer';
 
 // add some generic error handlers here, to log any exceptions we're not expecting
 process.on('uncaughtException', err => console.log('uncaughtException', err));
@@ -14,6 +16,23 @@ process.on('unhandledRejection', reason => console.log('unhandledRejection', rea
 
 // Read .env if file exists
 dotenv.config();
+
+function loadApp(context: Context, params: ParameterSet){	
+	//const {default: App} => import('./${params.app}')
+	console.log(`parámetro: ${params.app}`);
+	switch (params.app) {
+		case 'soccer':
+			return new SoccerMatch(context);
+			break;	
+		default:
+			break;
+	}
+	//looks like it doesn't works on node 8.12 , maybe on node 10
+	// if (params.app){		
+	// 	import(`./${params.app}`)
+	// 		.then((m) => { return new m.default(context) });		
+	// }
+}
 
 // This function starts the MRE server. It will be called immediately unless
 // we detect that the code is running in a debuggable environment. If so, a
@@ -26,8 +45,10 @@ function runApp() {
 	});
 
 	// Handle new application sessions
-	server.adapter.onConnection(context => new App(context));
+	server.adapter.onConnection(loadApp);	
+	// server.adapter.onConnection(context => new App(context));
 }
+
 
 // Check whether code is running in a debuggable watched filesystem
 // environment and if so, delay starting the app by one second to give
