@@ -8,8 +8,6 @@ import {
 	Actor,AssetContainer, ButtonBehavior,
 	ColliderType, Context,Guid,
 	PrimitiveShape, Vector3, User} from '@microsoft/mixed-reality-extension-sdk';
-// import { type } from 'os';
-// import { Transform } from 'stream';
 
 /**
  * Clase principal de la aplicación. Aquí se resuelve todo.
