@@ -9,6 +9,7 @@ import { Context, ParameterSet } from '@microsoft/mixed-reality-extension-sdk';
 import dotenv from 'dotenv';
 import { resolve as resolvePath } from 'path';
 import SoccerMatch from './soccer';
+import Bowling from './bowling'
 
 // add some generic error handlers here, to log any exceptions we're not expecting
 process.on('uncaughtException', err => console.log('uncaughtException', err));
@@ -23,6 +24,9 @@ function loadApp(context: Context, params: ParameterSet){
 	switch (params.app) {
 		case 'soccer':
 			return new SoccerMatch(context);
+			break;	
+		case 'bowling':
+			return new Bowling(context);
 			break;	
 		default:
 			break;
