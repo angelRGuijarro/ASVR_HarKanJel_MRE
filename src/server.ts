@@ -4,10 +4,12 @@
  */
 
 import * as MRE from '@microsoft/mixed-reality-extension-sdk';
-import { Context, ParameterSet } from '@microsoft/mixed-reality-extension-sdk';
+import { Context, ParameterSet, Vector3 } from '@microsoft/mixed-reality-extension-sdk';
+//import { DefaultRule } from '@microsoft/mixed-reality-extension-sdk/built/internal';
 //import { observe } from '@microsoft/mixed-reality-extension-sdk/built/internal';
 import dotenv from 'dotenv';
 import { resolve as resolvePath } from 'path';
+import DefaultApp from './defaultApp';
 import SoccerMatch from './soccer';
 
 // add some generic error handlers here, to log any exceptions we're not expecting
@@ -24,7 +26,8 @@ function loadApp(context: Context, params: ParameterSet){
 		case 'soccer':
 			return new SoccerMatch(context);
 			break;	
-		default:
+		default:			
+			return new DefaultApp(context);
 			break;
 	}
 	//looks like it doesn't works on node 8.12 , maybe on node 10
@@ -64,4 +67,25 @@ if (isDebug) {
 	setTimeout(runApp, delay);
 } else {
 	runApp();
+}
+
+export default class Utils {		
+	static MakeText(_context: MRE.Context, stringText: string, _position: Vector3): MRE.Actor {
+		//const newText = MRE.Actor.Create(this.context, {
+		const newText = MRE.Actor.Create(_context, {
+			actor: {
+				name: 'Text',
+				transform: {
+					app: { position: _position }
+				},
+				text: {
+					contents: stringText,
+					anchor: MRE.TextAnchorLocation.MiddleCenter,
+					//color: { r: 30 / 255, g: 206 / 255, b: 213 / 255 },
+					height: 0.3
+				}
+			}
+		});
+		return newText;
+	}
 }

@@ -12,7 +12,7 @@ import {
 /**
  * Clase principal de la aplicación. Aquí se resuelve todo.
  */
-export default class SoccerMAtch {	
+export default class SoccerMatch {	
 	public maxDistance2Kick = 2;
 	public kickForce = 5;
 	private assets: AssetContainer;
