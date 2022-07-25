@@ -11,6 +11,7 @@ import dotenv from 'dotenv';
 import { resolve as resolvePath } from 'path';
 import DefaultApp from './defaultApp';
 import SoccerMatch from './soccer';
+import Scoreboard from './scoreboard';
 
 // add some generic error handlers here, to log any exceptions we're not expecting
 process.on('uncaughtException', err => console.log('uncaughtException', err));
@@ -25,6 +26,9 @@ function loadApp(context: Context, params: ParameterSet){
 	switch (params.app) {
 		case 'soccer':
 			return new SoccerMatch(context);
+			break;	
+		case 'scoreboard':
+			return new Scoreboard(context);
 			break;	
 		default:			
 			return new DefaultApp(context);
