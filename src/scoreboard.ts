@@ -55,7 +55,7 @@ export default class Scoreboard {
 	private createBoard(menu: MRE.Actor, boardSize: MRE.Vector3) {
 		const boardMesh = this.assets.createBoxMesh('board', boardSize.x, boardSize.y, boardSize.z);
 		const boardPos = new MRE.Vector3(0, boardSize.y, 0);
-		const boarScoredPos = new MRE.Vector3(0, 0,-0.1);
+		const boarScoredPos = new MRE.Vector3(0, 0,-0.01);
 
 		//this.scoreboardActor = MRE.Actor.Create(this.context,
 		const board = MRE.Actor.Create(this.context,
