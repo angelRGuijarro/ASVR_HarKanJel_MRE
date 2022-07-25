@@ -30,7 +30,9 @@ export default class DefaultApp {
 	 * Once the context is "started", initialize the app.
 	 */
 	private started() {		
-		this.text = Utils.MakeText(this.context,"List of available apps:<br> · soccer", MRE.Vector3.Zero());
+		this.text = Utils.MakeText(this.context, "List of available apps:<br>" +
+												"· soccer<br>" +
+												"· scoreboard", MRE.Vector3.Zero());
 	}	
 
 	
