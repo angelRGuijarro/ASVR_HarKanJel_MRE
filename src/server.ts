@@ -12,6 +12,7 @@ import { resolve as resolvePath } from 'path';
 import DefaultApp from './defaultApp';
 import SoccerMatch from './soccer';
 import Scoreboard from './scoreboard';
+import TestApp from './test';
 
 // add some generic error handlers here, to log any exceptions we're not expecting
 process.on('uncaughtException', err => console.log('uncaughtException', err));
@@ -29,6 +30,9 @@ function loadApp(context: Context, params: ParameterSet){
 			break;	
 		case 'scoreboard':
 			return new Scoreboard(context);
+			break;	
+		case 'test':
+			return new TestApp(context);
 			break;	
 		default:			
 			return new DefaultApp(context);
