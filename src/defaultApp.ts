@@ -32,7 +32,8 @@ export default class DefaultApp {
 	private started() {		
 		this.text = Utils.MakeText(this.context, "List of available apps:<br>" +
 												"· soccer<br>" +
-												"· scoreboard", MRE.Vector3.Zero());
+												"· scoreboard<br>" + 
+												"· boat", MRE.Vector3.Zero());
 	}	
 
 	

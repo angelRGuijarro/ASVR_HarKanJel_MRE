@@ -13,6 +13,7 @@ import DefaultApp from './defaultApp';
 import SoccerMatch from './soccer';
 import Scoreboard from './scoreboard';
 import TestApp from './test';
+import BoatApp from './boat';
 
 // add some generic error handlers here, to log any exceptions we're not expecting
 process.on('uncaughtException', err => console.log('uncaughtException', err));
@@ -22,7 +23,8 @@ process.on('unhandledRejection', reason => console.log('unhandledRejection', rea
 dotenv.config();
 
 function loadApp(context: Context, params: ParameterSet){	
-	//const {default: App} => import('./${params.app}')
+	let secondButtonPos: MRE.Vector3;
+	
 	console.log(`parámetro: ${params.app}`);
 	switch (params.app) {
 		case 'soccer':
@@ -30,6 +32,14 @@ function loadApp(context: Context, params: ParameterSet){
 			break;	
 		case 'scoreboard':
 			return new Scoreboard(context);
+			break;	
+		case 'boat':
+			try{
+				secondButtonPos = new MRE.Vector3(+params.x,+params.y,+params.z);
+			}catch{
+				secondButtonPos = MRE.Vector3.Zero();
+			}			
+			return new BoatApp(context, secondButtonPos);
 			break;	
 		case 'test':
 			return new TestApp(context);
@@ -78,19 +88,19 @@ if (isDebug) {
 }
 
 export default class Utils {		
-	static MakeText(_context: MRE.Context, stringText: string, _position: Vector3): MRE.Actor {
+	static MakeText(_context: MRE.Context, stringText: string, _position?: Vector3, textSize?: number): MRE.Actor {		
 		//const newText = MRE.Actor.Create(this.context, {
 		const newText = MRE.Actor.Create(_context, {
 			actor: {
 				name: 'Text',
 				transform: {
-					app: { position: _position }
+					app: { position: typeof(_position) !== 'undefined'? _position : MRE.Vector3.Zero() }
 				},
 				text: {
 					contents: stringText,
 					anchor: MRE.TextAnchorLocation.MiddleCenter,
 					//color: { r: 30 / 255, g: 206 / 255, b: 213 / 255 },
-					height: 0.3
+					height: typeof(textSize) !== 'undefined'? textSize : 0.3
 				}
 			}
 		});

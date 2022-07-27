@@ -5,8 +5,6 @@
 
 import * as MRE from '@microsoft/mixed-reality-extension-sdk';
 import { Actor, Vector3 } from '@microsoft/mixed-reality-extension-sdk';
-import { ExecException, ExecOptions } from 'child_process';
-import { debug, log } from 'console';
 
 export default class Scoreboard {
 	private assets: MRE.AssetContainer;	

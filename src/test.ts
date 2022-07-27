@@ -4,7 +4,6 @@
  */
 
 import * as MRE from '@microsoft/mixed-reality-extension-sdk';
-import { MreArgumentError } from '@microsoft/mixed-reality-extension-sdk';
 //import { Vector3 } from '@microsoft/mixed-reality-extension-sdk';
 import Utils from './server';
 
