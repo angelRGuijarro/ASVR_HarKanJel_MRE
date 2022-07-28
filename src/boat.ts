@@ -23,6 +23,7 @@ export default class BoatApp {
 	private prefabs: {[key: string]: MRE.Prefab} = {};
 	private actors: MRE.Actor;
 	private secondButtonPos: MRE.Vector3 = MRE.Vector3.Zero();
+	private attachedBoats = new Map<MRE.Guid, MRE.Actor>();
 
 	constructor(private context: MRE.Context, secondButtonPos?: MRE.Vector3) {		
 		console.log(`Constructror de BoatApp`);
@@ -57,7 +58,7 @@ export default class BoatApp {
 		});
 		// Set a click handler on the button.
 		button.setBehavior(MRE.ButtonBehavior)
-			.onClick(user => this.catchTheBoat(user.id));
+			.onClick(user => this.catchTheBoat(user));
 
 		if (this.secondButtonPos !== MRE.Vector3.Zero()){
 			const button2 = MRE.Actor.Create(this.context,{
@@ -73,46 +74,45 @@ export default class BoatApp {
 			});
 			// Set a click handler on the button.
 			button2.setBehavior(MRE.ButtonBehavior)
-				.onClick(user => this.catchTheBoat(user.id));
+				.onClick(user => this.catchTheBoat(user));
 		}
 		
 	}	
 
 
-	private catchTheBoat(userId: MRE.Guid) {
+	private catchTheBoat(user: MRE.User) {
 		// if (this.context.actors.find(a => a.name === 'toy_boat')){
 		// 	console.log('Barco encontrado');
 
 		// }
-		const barco = this.context.actors.find(a => a.name === 'toy_boat');
-		if (barco){
-			console.log("Barco encontrado");
-			barco.destroy();
-			return;
-		}else{
-			console.log("No hay Barco");
-		}
-
-		MRE.Actor.CreateFromPrefab(this.context, {
-			prefab: this.prefabs['ship_id'],
-			actor: {
-				name: 'toy_boat',
-				transform: {
-					local: {
-						position: new MRE.Vector3(0,-0.3,0),
-						rotation: MRE.Quaternion.FromEulerAngles(
-							0 * MRE.DegreesToRadians,
-							0 * MRE.DegreesToRadians,
-							0 * MRE.DegreesToRadians),
-						scale: new MRE.Vector3(0.3,0.3,0.3),
+		// const barco = this.context.actors.find(a => a.name === 'toy_boat');
+		// if (barco){			
+		// 	barco.destroy();
+		// 	return;
+		// }
+		if (!this.removeBoat(user)){
+			this.attachedBoats.set(user.id, 
+				MRE.Actor.CreateFromPrefab(this.context, {
+					prefab: this.prefabs['ship_id'],
+					actor: {
+						name: 'toy_boat',
+						transform: {
+							local: {
+								position: new MRE.Vector3(0,-0.3,-0.2),
+								rotation: MRE.Quaternion.FromEulerAngles(
+									0 * MRE.DegreesToRadians,
+									0 * MRE.DegreesToRadians,
+									0 * MRE.DegreesToRadians),
+								scale: new MRE.Vector3(0.3,0.3,0.3),
+							}
+						},
+						attachment: {
+							attachPoint: 'hips',
+							userId: user.id
+						}
 					}
-				},
-				attachment: {
-					attachPoint: 'hips',
-					userId
-				}
-			}
-		})		
+				}));
+		}
 	}
 	//Load 3D models for this app
 	private async loadModels() {		
@@ -128,5 +128,13 @@ export default class BoatApp {
 		}
 	}
 
+	private removeBoat(user: MRE.User): boolean {
+		if (this.attachedBoats.has(user.id)) { 
+			this.attachedBoats.get(user.id).destroy(); 
+			this.attachedBoats.delete(user.id);
+			return true;
+		}
+		return false;
+	}
 	
 }
