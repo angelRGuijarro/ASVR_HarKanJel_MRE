@@ -4,6 +4,7 @@
  */
 
 import * as MRE from '@microsoft/mixed-reality-extension-sdk';
+import { DegreesToRadians, Vector3 } from '@microsoft/mixed-reality-extension-sdk';
 //import { Vector3 } from '@microsoft/mixed-reality-extension-sdk';
 import Utils from './server';
 
@@ -28,6 +29,7 @@ export default class BoatApp {
 	constructor(private context: MRE.Context, secondButtonPos?: MRE.Vector3) {		
 		console.log(`Constructror de BoatApp`);
 		this.assets = new MRE.AssetContainer(context);
+		this.assets.createMaterial('invisible', { color: MRE.Color4.FromColor3(MRE.Color3.Red(), 0.0), alphaMode: MRE.AlphaMode.Blend });
 		this.actors = MRE.Actor.Create(this.context);
 
 		if (typeof(secondButtonPos) !== 'undefined'){
@@ -40,35 +42,52 @@ export default class BoatApp {
 	/**
 	 * Once the context is "started", initialize the app.
 	 */
-	private started() {				
+	private async started() {				
 		this.loadModels();		
 		
-		const buttonMesh = this.assets.createBoxMesh('button', 0.3, 0.3, 0.01);		
+		//const buttonMesh = this.assets.createBoxMesh('button', 0.3, 0.3, 0.01);		
+		const buttonMesh = this.assets.createSphereMesh('button',2.5); // , 0.3, 0.3, 0.01);		
+		const buttonBoat = await this.assets.loadGltf('toy_boat.glb',"mesh");
+		const buttonBoatScale = new Vector3(0.5,0.5,0.5);
+
+		const invisibleMaterial = this.assets.materials.find(m => m.name === 'invisible');		
 		
-		const button = MRE.Actor.Create(this.context,{
+		const button = MRE.Actor.CreateFromPrefab(this.context,{
+			firstPrefabFrom: buttonBoat,
 			actor:{
 				parentId: this.actors.id,
-				name: 'button',
-				appearance: { meshId: buttonMesh.id },
+				name: 'button',		
+				appearance: {meshId: buttonMesh.id, materialId: invisibleMaterial.id},							
 				collider: { geometry: { shape: MRE.ColliderType.Auto } },
 				transform: {
-					local: { position: { x: 0, y: 0, z: 0 } }
+					local: {
+						position: MRE.Vector3.Zero(),
+						scale: buttonBoatScale,
+						//rotation: {x:0, y:90 * MRE.DegreesToRadians , z:0}
+						rotation: MRE.Quaternion.FromEulerAngles(0,90*DegreesToRadians,0)
+					}
 				}
 			}
 		});
 		// Set a click handler on the button.
 		button.setBehavior(MRE.ButtonBehavior)
 			.onClick(user => this.catchTheBoat(user));
-
-		if (this.secondButtonPos !== MRE.Vector3.Zero()){
-			const button2 = MRE.Actor.Create(this.context,{
+		
+		if (this.secondButtonPos !== MRE.Vector3.Zero()){			
+			const button2 = MRE.Actor.CreateFromPrefab(this.context,{
+				firstPrefabFrom: buttonBoat,
 				actor:{
 					parentId: this.actors.id,
-					name: 'button2',
-					appearance: { meshId: buttonMesh.id },
+					name: 'button2',					
+					appearance: {meshId: buttonMesh.id, materialId: invisibleMaterial.id},
 					collider: { geometry: { shape: MRE.ColliderType.Auto } },
 					transform: {
-						local: { position: this.secondButtonPos }
+						local: {
+							position: this.secondButtonPos,
+							scale: buttonBoatScale,
+							//rotation: {x:0, y:90 * MRE.DegreesToRadians , z:0}
+							rotation: MRE.Quaternion.FromEulerAngles(0,90*DegreesToRadians,0)
+						}
 					}
 				}
 			});
@@ -98,7 +117,7 @@ export default class BoatApp {
 						name: 'toy_boat',
 						transform: {
 							local: {
-								position: new MRE.Vector3(0,-0.3,-0.2),
+								position: new MRE.Vector3(0,-0.3,-0.3),
 								rotation: MRE.Quaternion.FromEulerAngles(
 									0 * MRE.DegreesToRadians,
 									0 * MRE.DegreesToRadians,

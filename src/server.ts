@@ -35,7 +35,10 @@ function loadApp(context: Context, params: ParameterSet){
 			break;	
 		case 'boat':
 			try{
-				secondButtonPos = new MRE.Vector3(+params.x,+params.y,+params.z);
+				//console.log(`X ${params.x} Y ${params.y} Z ${params.z}`);
+				secondButtonPos = new MRE.Vector3(parseFloat(params.x.toString()),
+					parseFloat(params.y.toString()),
+					parseFloat(params.z.toString()));
 			}catch{
 				secondButtonPos = MRE.Vector3.Zero();
 			}			
