@@ -5,17 +5,7 @@
 
 import * as MRE from '@microsoft/mixed-reality-extension-sdk';
 import { DegreesToRadians, Vector3 } from '@microsoft/mixed-reality-extension-sdk';
-//import { Vector3 } from '@microsoft/mixed-reality-extension-sdk';
-import Utils from './server';
 
-//import { TextFontFamily } from '@microsoft/mixed-reality-extension-sdk';
-//import { runInNewContext } from 'vm';
-/*
-import {
-	Actor,AssetContainer, ButtonBehavior,
-	ColliderType, Context,Guid,
-	PrimitiveShape, Vector3, User} from '@microsoft/mixed-reality-extension-sdk';
-*/
 /**
  * Clase principal de la aplicación. Aquí se resuelve todo.
  */
@@ -29,7 +19,8 @@ export default class BoatApp {
 	constructor(private context: MRE.Context, secondButtonPos?: MRE.Vector3) {		
 		console.log(`Constructror de BoatApp`);
 		this.assets = new MRE.AssetContainer(context);
-		this.assets.createMaterial('invisible', { color: MRE.Color4.FromColor3(MRE.Color3.Red(), 0.0), alphaMode: MRE.AlphaMode.Blend });
+		this.assets.createMaterial('invisible', 
+			{ color: MRE.Color4.FromColor3(MRE.Color3.Red(), 0.0), alphaMode: MRE.AlphaMode.Blend });
 		this.actors = MRE.Actor.Create(this.context);
 
 		if (typeof(secondButtonPos) !== 'undefined'){
