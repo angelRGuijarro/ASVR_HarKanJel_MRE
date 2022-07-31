@@ -132,7 +132,7 @@ export default class BoatApp {
 		// (http://creativecommons.org/licenses/by/4.0/)
 		try {
 			const assets = await this.assets.loadGltf('toy_boat.glb');
-			this.prefabs['ship_id'] = assets.find(a => a.prefab !== null) as MRE.Prefab;
+			this.prefabs['ship_id'] = assets.find(a => a.prefab !== null) as MRE.Prefab;			
 		} catch (e) {
 			return MRE.log.error("app", e);
 		}

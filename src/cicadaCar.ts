@@ -90,9 +90,10 @@ export default class CicadaCarApp {
 	 * @param user User that clicked the car. If currently has a car it is destroyed.
 	 * @returns true if car has been deteached/destroyed.
 	 */
-	private detachCar(user: MRE.User): boolean {				
+	private detachCar(user: MRE.User): boolean {						
 		if (this.attachedCars.has(user.id)) { 
-			//this.attachedCars.get(user.id).detach();			
+			const car = this.attachedCars.get(user.id);
+			//this.attachedCars.get(user.id).detach();
 			this.attachedCars.get(user.id).destroy();			
 			/**== now should let the car on user's actual position */
 			
