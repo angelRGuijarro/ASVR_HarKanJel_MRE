@@ -126,10 +126,10 @@ export default class BoatApp {
 	}
 	//Load 3D models for this app
 	private async loadModels() {		
-		//This work is based on "Toy Boat" 
-		//(https://sketchfab.com/3d-models/toy-boat-3c96a2a3f207411987c6151e680b72d2) 
-		//by Pablo88 (https://sketchfab.com/Pablo88) licensed under CC-BY-4.0 
-		//(http://creativecommons.org/licenses/by/4.0/)
+		// This work is based on "Toy Boat" 
+		// (https://sketchfab.com/3d-models/toy-boat-3c96a2a3f207411987c6151e680b72d2) 
+		// by Pablo88 (https://sketchfab.com/Pablo88) licensed under CC-BY-4.0 
+		// (http://creativecommons.org/licenses/by/4.0/)
 		try {
 			const assets = await this.assets.loadGltf('toy_boat.glb');
 			this.prefabs['ship_id'] = assets.find(a => a.prefab !== null) as MRE.Prefab;

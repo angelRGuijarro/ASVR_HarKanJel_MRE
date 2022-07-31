@@ -14,6 +14,7 @@ import SoccerMatch from './soccer';
 import Scoreboard from './scoreboard';
 import TestApp from './test';
 import BoatApp from './boat';
+import CicadaCarApp from './cicadaCar';
 
 // add some generic error handlers here, to log any exceptions we're not expecting
 process.on('uncaughtException', err => console.log('uncaughtException', err));
@@ -44,6 +45,8 @@ function loadApp(context: Context, params: ParameterSet){
 			}			
 			return new BoatApp(context, secondButtonPos);
 			break;	
+		case 'cicada_car':
+			return new CicadaCarApp(context);
 		case 'test':
 			return new TestApp(context);
 			break;	
