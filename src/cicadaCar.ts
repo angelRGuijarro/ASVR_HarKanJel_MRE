@@ -2,7 +2,6 @@
  * Copyright Ángel Ruiz Guijarro. All rights reserved.
  * Licensed under the MIT License.
  */
-
 import * as MRE from '@microsoft/mixed-reality-extension-sdk';
 
 /**
@@ -38,10 +37,48 @@ export default class CicadaCarApp {
 	// 	positionMark.attach(user, 'head');
 	// }
 	
+	/**
+	 * Once the context is "started", initialize the app.
+	 */
+	private started() {				
+		this.createNewCar();
+		this.resetOnClickHandlers();		
+	}	
 	
+	/**
+	 * 
+	 * @param user User whom clicked the car. Undefined if creating parked car.
+	 * @returns new created car
+	 */
+	private createNewCar(user?: MRE.User) {		
+		const nameSuffix = (user !== undefined ? user.name:"default");		
+		const boxMesh = this.assets.createBoxMesh('boxMesh_' + nameSuffix, 3, 0.2, 1.5);						
+		const invisibleMaterial = this.assets.materials.find(m => m.name === 'invisible');		
+		
+		return MRE.Actor.CreateFromGltf(this.assets, {
+			uri: "cicada_-_retro_cartoon_car.glb", colliderType: "box",
+			actor: {
+				parentId: this.actors.id,
+				name: 'car_cicada_' + nameSuffix,
+				appearance: { meshId: boxMesh.id, materialId: invisibleMaterial.id },
+				collider: { geometry: { shape: MRE.ColliderType.Auto } },
+				transform: {
+					local: {
+						position: MRE.Vector3.Zero(),
+						scale: MRE.Vector3.One(),
+						rotation: MRE.Quaternion.FromEulerAngles(0, -90 * MRE.DegreesToRadians, 0)
+					}
+				}
+			}
+		});				
+	}
+	
+	/**
+	 * Every time a new user enters or a new car is created behabiors must be reset
+	 */
 	private resetOnClickHandlers(){
 		this.context.actors.forEach(actor => {			
-			if (actor.name === 'car_cicada'){
+			if ((actor.name !== undefined) && (actor.name.includes('car_cicada'))){
 				actor.setBehavior(MRE.ButtonBehavior)
 					.onClick((user) => this.carOnClick(user));		
 			}
@@ -49,42 +86,15 @@ export default class CicadaCarApp {
 	}
 
 	/**
-	 * Once the context is "started", initialize the app.
+	 * 
+	 * @param user User that clicked the car. If currently has a car it is destroyed.
+	 * @returns true if car has been deteached/destroyed.
 	 */
-	private started() {				
-		const boxMesh = this.assets.createBoxMesh('boxMesh', 3, 0.2, 1.5);		
-		
-		const invisibleMaterial = this.assets.materials.find(m => m.name === 'invisible');		
-		
-		const car = MRE.Actor.CreateFromGltf(this.assets,{
-			uri: "cicada_-_retro_cartoon_car.glb", colliderType: "box",
-			actor:{
-				parentId: this.actors.id,
-				name: 'car_cicada',		
-				appearance: {meshId: boxMesh.id, materialId: invisibleMaterial.id},
-				collider: { geometry: { shape: MRE.ColliderType.Auto } },
-				transform: {
-					local: {
-						position: MRE.Vector3.Zero(),
-						scale:	MRE.Vector3.One(),
-						rotation: MRE.Quaternion.FromEulerAngles(0,-90*MRE.DegreesToRadians,0)
-					}
-				}
-			}
-		})
-
-		// Set a click handler on the button.
-		car.setBehavior(MRE.ButtonBehavior)
-			.onClick((user) => this.carOnClick(user));		
-		
-	}	
-
-
 	private detachCar(user: MRE.User): boolean {				
 		if (this.attachedCars.has(user.id)) { 
-			this.attachedCars.get(user.id).detach(); //this.attachedCars.get(user.id).destroy();			
+			//this.attachedCars.get(user.id).detach();			
+			this.attachedCars.get(user.id).destroy();			
 			/**== now should let the car on user's actual position */
-
 			
 			this.attachedCars.delete(user.id);
 			return true;
@@ -95,12 +105,13 @@ export default class CicadaCarApp {
 	private carOnClick(user: MRE.User) {	
 		/**== should mark user to check its position over time... setInterval ==*/
 
-
 		if (!this.detachCar(user)){
-			const carClicked = this.actors.findChildrenByName('car_cicada',true)[0];
+			//const carClicked = this.actors.findChildrenByName('car_cicada',true)[0];
+			const carClicked = this.createNewCar(user);
 			carClicked.attach(user.id, 'hips');
 			carClicked.transform.local.position = new MRE.Vector3(0.4,0.2,-0.15);
 			this.attachedCars.set(user.id, carClicked);
+			this.resetOnClickHandlers();		
 		}	
 	}
 	
