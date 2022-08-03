@@ -4,7 +4,6 @@
  */
 
 import * as MRE from '@microsoft/mixed-reality-extension-sdk';
-import { DegreesToRadians, Vector3 } from '@microsoft/mixed-reality-extension-sdk';
 
 /**
  * Clase principal de la aplicación. Aquí se resuelve todo.
@@ -36,92 +35,67 @@ export default class BoatApp {
 	private async started() {				
 		this.loadModels();		
 		
-		//const buttonMesh = this.assets.createBoxMesh('button', 0.3, 0.3, 0.01);		
-		const buttonMesh = this.assets.createSphereMesh('button',2.5); // , 0.3, 0.3, 0.01);		
-		const buttonBoat = await this.assets.loadGltf('toy_boat.glb',"mesh");
-		const buttonBoatScale = new Vector3(0.5,0.5,0.5);
-
-		const invisibleMaterial = this.assets.materials.find(m => m.name === 'invisible');		
+		//Exposed (clickable) boat
+		await this.createNewBoat(true);
 		
-		const button = MRE.Actor.CreateFromPrefab(this.context,{
-			firstPrefabFrom: buttonBoat,
-			actor:{
+		// If needed a second boat, place on position
+		if (JSON.stringify(this.secondButtonPos) !== JSON.stringify(MRE.Vector3.Zero())){
+			const secondBoat = await this.createNewBoat(true).then();
+			secondBoat.transform.local.position = this.secondButtonPos;
+		
+		}
+	}	
+
+
+	private async createNewBoat(clickable: boolean, atachToUser?: MRE.User): Promise<MRE.Actor> {		
+		const invisibleMaterial = this.assets.materials.find(m => m.name === 'invisible');
+
+		// Create a basic boat with appearance and collider if it has to be clickable
+		const newBoat = MRE.Actor.CreateFromPrefab(this.context, {
+			firstPrefabFrom: await this.assets.loadGltf('toy_boat.glb', "mesh"),
+			actor: {
 				parentId: this.actors.id,
-				name: 'button',		
-				appearance: {meshId: buttonMesh.id, materialId: invisibleMaterial.id},							
-				collider: { geometry: { shape: MRE.ColliderType.Auto } },
+				name: 'boat',
+				appearance: clickable?{ meshId: this.assets.createSphereMesh('button', 2.5).id, 
+					materialId: invisibleMaterial.id }:null,
+				collider: clickable?{ geometry: { shape: MRE.ColliderType.Auto } }:null,
 				transform: {
 					local: {
 						position: MRE.Vector3.Zero(),
-						scale: buttonBoatScale,
-						//rotation: {x:0, y:90 * MRE.DegreesToRadians , z:0}
-						rotation: MRE.Quaternion.FromEulerAngles(0,90*DegreesToRadians,0)
+						scale: new MRE.Vector3(0.5, 0.5, 0.5),						
+						rotation: MRE.Quaternion.FromEulerAngles(0, 90 * MRE.DegreesToRadians, 0)
 					}
 				}
 			}
 		});
-		// Set a click handler on the button.
-		button.setBehavior(MRE.ButtonBehavior)
-			.onClick(user => this.catchTheBoat(user));
-		
-		if (this.secondButtonPos !== MRE.Vector3.Zero()){			
-			const button2 = MRE.Actor.CreateFromPrefab(this.context,{
-				firstPrefabFrom: buttonBoat,
-				actor:{
-					parentId: this.actors.id,
-					name: 'button2',					
-					appearance: {meshId: buttonMesh.id, materialId: invisibleMaterial.id},
-					collider: { geometry: { shape: MRE.ColliderType.Auto } },
-					transform: {
-						local: {
-							position: this.secondButtonPos,
-							scale: buttonBoatScale,
-							//rotation: {x:0, y:90 * MRE.DegreesToRadians , z:0}
-							rotation: MRE.Quaternion.FromEulerAngles(0,90*DegreesToRadians,0)
-						}
-					}
-				}
-			});
-			// Set a click handler on the button.
-			button2.setBehavior(MRE.ButtonBehavior)
-				.onClick(user => this.catchTheBoat(user));
+		// If it has to be attached, needs to be smaller and positioned behind the user model
+		if (atachToUser !== undefined){
+			const newTransformLocal = new MRE.ScaledTransform();
+			newTransformLocal.position = new MRE.Vector3(0,-0.3,-0.3);
+			newTransformLocal.rotation = MRE.Quaternion.FromEulerAngles(
+				0 * MRE.DegreesToRadians,
+				0 * MRE.DegreesToRadians,
+				0 * MRE.DegreesToRadians);
+			newTransformLocal.scale =new MRE.Vector3(0.3,0.3,0.3);
+			
+			newBoat.transform.local = newTransformLocal;
+			newBoat.attach(atachToUser,'hips');
 		}
-		
-	}	
+		// Set ButtonBehavior if clickable
+		if (clickable){
+			// Set a click handler on the button.
+			newBoat.setBehavior(MRE.ButtonBehavior)
+				.onClick(user => this.catchOrLeaveTheBoat(user));
+		}
 
+		return newBoat;
+	}
 
-	private catchTheBoat(user: MRE.User) {
-		// if (this.context.actors.find(a => a.name === 'toy_boat')){
-		// 	console.log('Barco encontrado');
-
-		// }
-		// const barco = this.context.actors.find(a => a.name === 'toy_boat');
-		// if (barco){			
-		// 	barco.destroy();
-		// 	return;
-		// }
+	private async catchOrLeaveTheBoat(user: MRE.User) {
+		// If you got it, leave it
 		if (!this.removeBoat(user)){
-			this.attachedBoats.set(user.id, 
-				MRE.Actor.CreateFromPrefab(this.context, {
-					prefab: this.prefabs['ship_id'],
-					actor: {
-						name: 'toy_boat',
-						transform: {
-							local: {
-								position: new MRE.Vector3(0,-0.3,-0.3),
-								rotation: MRE.Quaternion.FromEulerAngles(
-									0 * MRE.DegreesToRadians,
-									0 * MRE.DegreesToRadians,
-									0 * MRE.DegreesToRadians),
-								scale: new MRE.Vector3(0.3,0.3,0.3),
-							}
-						},
-						attachment: {
-							attachPoint: 'hips',
-							userId: user.id
-						}
-					}
-				}));
+			const newBoat = await this.createNewBoat(false,user).then();
+			this.attachedBoats.set(user.id, newBoat);
 		}
 	}
 	//Load 3D models for this app
