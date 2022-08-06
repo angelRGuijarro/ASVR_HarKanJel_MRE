@@ -4,7 +4,6 @@
  */
 import * as MRE from '@microsoft/mixed-reality-extension-sdk';
 import { Prefab } from '@microsoft/mixed-reality-extension-sdk';
-import { timeStamp } from 'console';
 import Utils from './Utils';
 
 /**
@@ -57,7 +56,7 @@ export default class CicadaCarApp {
 	 */
 	private async createNewCar(user?: MRE.User) {		
 		const nameSuffix = (user !== undefined ? user.name:"default");		
-		const buttonMesh = this.assetsContainer.createSphereMesh('mesh_' + nameSuffix, 0.1, 0.1, 0.1);						
+		const buttonMesh = this.assetsContainer.createSphereMesh('mesh_' + nameSuffix, 0.1, 0.1, 0.1);
 		//const invisibleMaterial = this.assetsContainer.materials.find(m => m.name === 'invisible');		
 		let carPrefab = this.assetsContainer.prefabs.find(m => m.name === 'Scene');		
 		if (carPrefab === undefined){
