@@ -5,16 +5,8 @@
 
 import * as MRE from '@microsoft/mixed-reality-extension-sdk';
 //import { Vector3 } from '@microsoft/mixed-reality-extension-sdk';
-import Utils from './server';
+import Utils from './Utils';
 
-//import { TextFontFamily } from '@microsoft/mixed-reality-extension-sdk';
-//import { runInNewContext } from 'vm';
-/*
-import {
-	Actor,AssetContainer, ButtonBehavior,
-	ColliderType, Context,Guid,
-	PrimitiveShape, Vector3, User} from '@microsoft/mixed-reality-extension-sdk';
-*/
 /**
  * Clase principal de la aplicación. Aquí se resuelve todo.
  */
@@ -23,9 +15,11 @@ export default class TestApp {
 	private mainActor: MRE.Actor;
 	private testActor: MRE.Actor;
 	private testChildActor: MRE.Actor;
+	private utils: Utils;
 
 	constructor(private context: MRE.Context) {		
 		console.log(`Constructror de TestApp`);
+		this.utils = new Utils(context);
 		this.context.onStarted(() => this.started());
 	}
 
@@ -33,7 +27,7 @@ export default class TestApp {
 	 * Once the context is "started", initialize the app.
 	 */
 	private started() {		
-		this.text = Utils.MakeText(this.context, "Testing new code...", MRE.Vector3.Zero());
+		this.text = this.utils.MakeText("Testing new code...", MRE.Vector3.Zero());
 		this.mainActor = MRE.Actor.Create(this.context);
 
 		this.testActor = MRE.Actor.Create(this.context,{
@@ -51,8 +45,8 @@ export default class TestApp {
 		});
 
 		const child = this.mainActor.findChildrenByName('testChild',true);
-		if (child[0]){
-			this.text = Utils.MakeText(this.context, "Found child o'mine", new MRE.Vector3(0,1,0));
+		if (child[0]){			
+			this.text = this.utils.MakeText("Found child o'mine", new MRE.Vector3(0,1,0));
 		}
 	}	
 }

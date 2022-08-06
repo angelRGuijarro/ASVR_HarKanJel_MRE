@@ -5,8 +5,6 @@
 
 import * as MRE from '@microsoft/mixed-reality-extension-sdk';
 import { Context, ParameterSet, Vector3 } from '@microsoft/mixed-reality-extension-sdk';
-//import { DefaultRule } from '@microsoft/mixed-reality-extension-sdk/built/internal';
-//import { observe } from '@microsoft/mixed-reality-extension-sdk/built/internal';
 import dotenv from 'dotenv';
 import { resolve as resolvePath } from 'path';
 import DefaultApp from './defaultApp';
@@ -93,23 +91,4 @@ if (isDebug) {
 	runApp();
 }
 
-export default class Utils {		
-	static MakeText(_context: MRE.Context, stringText: string, _position?: Vector3, textSize?: number): MRE.Actor {		
-		//const newText = MRE.Actor.Create(this.context, {
-		const newText = MRE.Actor.Create(_context, {
-			actor: {
-				name: 'Text',
-				transform: {
-					app: { position: typeof(_position) !== 'undefined'? _position : MRE.Vector3.Zero() }
-				},
-				text: {
-					contents: stringText,
-					anchor: MRE.TextAnchorLocation.MiddleCenter,
-					//color: { r: 30 / 255, g: 206 / 255, b: 213 / 255 },
-					height: typeof(textSize) !== 'undefined'? textSize : 0.3
-				}
-			}
-		});
-		return newText;
-	}
-}
+

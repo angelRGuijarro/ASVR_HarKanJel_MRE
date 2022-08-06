@@ -2,10 +2,8 @@
  * Copyright Ángel Ruiz Guijarro. All rights reserved.
  * Licensed under the MIT License.
  */
-
 import * as MRE from '@microsoft/mixed-reality-extension-sdk';
-import { Actor } from '@microsoft/mixed-reality-extension-sdk';
-import Utils from './server';
+import Utils from './Utils';
 
 /**
  * Clase principal de la aplicación. Aquí se resuelve todo.
@@ -16,14 +14,12 @@ export default class BoatApp {
 	private actors: MRE.Actor;
 	private secondButtonPos: MRE.Vector3 = MRE.Vector3.Zero();
 	private attachedBoats = new Map<MRE.Guid, MRE.Actor>();
-	private invisibleMaterial: MRE.Material;
+	private utils: Utils;	
 
 	constructor(private context: MRE.Context, secondButtonPos?: MRE.Vector3) {		
 		console.log(`Constructror de BoatApp`);
 		this.assetsContainer = new MRE.AssetContainer(context);
-		this.assetsContainer.createMaterial('invisible', 
-			{ color: MRE.Color4.FromColor3(MRE.Color3.Red(), 0.0), alphaMode: MRE.AlphaMode.Blend });
-		this.invisibleMaterial = this.assetsContainer.materials.find(m => m.name === 'invisible');		
+		this.utils = new Utils(this.context, this.assetsContainer);
 		this.actors = MRE.Actor.Create(this.context);
 
 		if (typeof(secondButtonPos) !== 'undefined'){
@@ -58,7 +54,7 @@ export default class BoatApp {
 				parentId: this.actors.id,
 				name: 'boat',
 				appearance: clickable?{ meshId: this.assetsContainer.createSphereMesh('button', 2.5).id, 
-					materialId: this.invisibleMaterial.id }:null,
+					materialId: this.utils.invisibleMaterial.id }:null,
 				collider: clickable?{ geometry: { shape: MRE.ColliderType.Auto } }:null,
 				transform: { local: {
 					position: MRE.Vector3.Zero(),
@@ -88,8 +84,12 @@ export default class BoatApp {
 			// 	90 * MRE.DegreesToRadians,
 			// 	0 * MRE.DegreesToRadians);
 			cInfoTransformLocal.scale =new MRE.Vector3(1,1,1);
-			
-			this.copyRightInfo(newBoat, cInfoTransformLocal);
+			const copyRightInfoText = 'This work is based on "Toy Boat" <br> ' +
+                '(https://sketchfab.com/3d-models/toy-boat-3c96a2a3f207411987c6151e680b72d2) <br>' +
+                'by Pablo88 (https://sketchfab.com/Pablo88) licensed under CC-BY-4.0 <br>' +
+                '(http://creativecommons.org/licenses/by/4.0/)';
+			const textPosition = new MRE.Vector3(0.5,1.5,0);
+			this.utils.copyRightInfo(newBoat, copyRightInfoText, cInfoTransformLocal,textPosition);
 		}
 
 		
@@ -130,46 +130,5 @@ export default class BoatApp {
 			return true;
 		}
 		return false;
-	}
-
-	private copyRightInfo(parent: MRE.Actor, transformLocal: MRE.ScaledTransform){				
-		//Create button		
-		const button = MRE.Actor.Create(this.context,{
-			actor: {
-				parentId: parent.id,
-				name: 'buttonC',
-				appearance: { meshId: this.assetsContainer.createBoxMesh('buttonCMesh', 0.5, 0.5, 0.1).id,
-					materialId: this.invisibleMaterial.id },
-				collider: { geometry: { shape: MRE.ColliderType.Auto } }
-			}
-		});			
-		button.transform.local = transformLocal;		
-		//click handler for this button
-		button.setBehavior(MRE.ButtonBehavior).onClick(() => this.showCopyRightInfo(button));
-			
-		// Create a label for the button.
-		MRE.Actor.Create(this.context,{
-			actor: {
-				parentId: button.id,
-				name: 'labelButtonC',
-				text: {
-					contents: "(C)",
-					height: 0.3,
-					anchor: MRE.TextAnchorLocation.MiddleCenter
-				}
-			}
-		});
-	}
-
-	private showCopyRightInfo(button: Actor){
-		const copyRightInfoText = Utils.MakeText(this.context,
-			'This work is based on "Toy Boat" <br> ' +
-			'(https://sketchfab.com/3d-models/toy-boat-3c96a2a3f207411987c6151e680b72d2) <br>' +
-			'by Pablo88 (https://sketchfab.com/Pablo88) licensed under CC-BY-4.0 <br>' +
-			'(http://creativecommons.org/licenses/by/4.0/)',new MRE.Vector3(0.5,1.5,0),0.1);
-		copyRightInfoText.parent = button;		
-		setTimeout(() => {
-			copyRightInfoText.destroy();
-		}, 10000); 
 	}
 }
