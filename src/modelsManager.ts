@@ -3,11 +3,7 @@
  * Licensed under the MIT License.
  */
 import * as MRE from '@microsoft/mixed-reality-extension-sdk';
-import { MreArgumentError, ParameterSet, Quaternion } from '@microsoft/mixed-reality-extension-sdk';
-import { resolve } from 'dns';
-import { parse } from 'path';
 import { URLSearchParams } from 'url';
-import { inherits } from 'util';
 import Utils from './Utils';
 
 /**
@@ -19,7 +15,7 @@ export default class ModelsManager {
 	private text: MRE.Actor = null;
 	private utils: Utils;
 
-	constructor(private context: MRE.Context,params: ParameterSet) {		
+	constructor(private context: MRE.Context,params: MRE.ParameterSet) {		
 		console.log(`Constructror de MotoTRON`);
 		console.log(params);
 		this.params = new URLSearchParams(params);		
@@ -31,34 +27,44 @@ export default class ModelsManager {
 	 * Once the context is "started", initialize the app.
 	 */
 	private started() {		
-		// this.text = this.utils.MakeText("Testing Flying Cars", MRE.Vector3.Zero());		
-		const _uri = this.params.has('model')?this.params.get('model')+'.glb' : 'altspace-cube.glb';
-		const _init = Utils.stringToVector3(this.params.get('init'));
-		const _end = this.params.has('end')? Utils.stringToVector3(this.params.get('end')) : undefined;
-		const _time = this.params.has('time')? parseFloat(this.params.get('time')) : 1;
-		const _reverse = this.params.get('reverse') === 'true';
-		const _reverseTime = this.params.has('reverseTime')? parseFloat(this.params.get('reverseTime')) : 2;
+		//flying_car
+		//atra
+		//Delorean
+		//spaceship
+		if (this.params.has('model')===false || this.params.get('model') === ''){
+			this.text = this.utils.MakeText("Available models:" +
+				"<br>· flying_car<br>· atra<br>· delorean<br>· spaceship", MRE.Vector3.Zero());		
+		}else{
+			const _uri = this.params.get('model')+'.glb';
+			const _init = Utils.stringToVector3(this.params.get('init'));
+			const _end = this.params.has('end')? Utils.stringToVector3(this.params.get('end')) : undefined;
+			const _time = this.params.has('time')? parseFloat(this.params.get('time')) : 1;
+			const _reverse = this.params.get('reverse') === 'true';
+			const _reverseTime = this.params.has('reverseTime')? parseFloat(this.params.get('reverseTime')) : 2;
+				
+			const model = this.loadModel({uri: _uri, colliderType: 'box'},
+				{
+					transform: {
+						local: {
+							position: _init
+						}
+					}	
+				});
+	
 			
-		const model = this.loadModel({uri: _uri, colliderType: 'box'},
-			{
-				transform: {
-					local: {
-						position: _init
-					}
-				}	
-			});
-
-		
-		model.created().then(_ => {
-			if (_end !== undefined){
-				const totalTime = (2*_time+2*_reverseTime)*1000;				
-				this.animateTo(model, _end, _init, _time, _reverse, _reverseTime)
-				setInterval(() => this.animateTo(model, _end, _init, _time, _reverse, _reverseTime), totalTime);
-			}
-		} );
+			model.created().then(_ => {
+				if (_end !== undefined){
+					const totalTime = (2*_time+2*_reverseTime)*1000;				
+					this.animateTo(model, _end, _init, _time, _reverse, _reverseTime)
+					setInterval(() => this.animateTo(model, _end, _init, _time, _reverse, _reverseTime), totalTime);
+				}
+			} );
+		}
 	}	
 
-	private animateTo(model: MRE.Actor, endPoint: MRE.Vector3, initPoint: MRE.Vector3, timeToGo: number, reverse: boolean, reverseTime: number){			
+	private animateTo(model: MRE.Actor, endPoint: MRE.Vector3, initPoint: MRE.Vector3,
+		timeToGo: number, reverse: boolean, reverseTime: number){			
+
 		//goto first point
 		MRE.Animation.AnimateTo(this.context,
 			model,
