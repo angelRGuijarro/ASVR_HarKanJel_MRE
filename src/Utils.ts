@@ -1,5 +1,6 @@
 /* eslint-disable no-mixed-spaces-and-tabs */
 import * as MRE from '@microsoft/mixed-reality-extension-sdk';
+import { Quaternion, Vector2 } from '@microsoft/mixed-reality-extension-sdk';
 
 /**
  * 
@@ -76,5 +77,24 @@ export default class Utils {
     		}
     	});
     	return newText;
+    }
+
+    //convert "(x,y,z)" string to corresponding MRE.Vector3 object
+    static stringToVector3(_string: string): MRE.Vector3{		
+    	const aEnd = _string.slice(1, _string.length-1).split(',');
+    	try{
+    		return new MRE.Vector3(parseFloat(aEnd[0]), parseFloat(aEnd[1]), parseFloat(aEnd[2]));
+    	}catch{
+    		return MRE.Vector3.Zero();
+    	}
+    }
+
+    
+    //Only needs x,y,z from vector
+    static QuaternionFromVector3(vector: MRE.Vector3): MRE.Quaternion{		
+    	return MRE.Quaternion.FromEulerAngles(
+    		vector.x * MRE.DegreesToRadians,
+    		vector.y * MRE.DegreesToRadians,
+    		vector.z * MRE.DegreesToRadians);
     }
 }
