@@ -3,11 +3,7 @@
  * Licensed under the MIT License.
  */
 import * as MRE from '@microsoft/mixed-reality-extension-sdk';
-import { MreArgumentError, ParameterSet, Quaternion } from '@microsoft/mixed-reality-extension-sdk';
-import { resolve } from 'dns';
-import { parse } from 'path';
 import { URLSearchParams } from 'url';
-import { inherits } from 'util';
 import Utils from './Utils';
 
 /**
@@ -19,7 +15,7 @@ export default class ModelsManager {
 	private text: MRE.Actor = null;
 	private utils: Utils;
 
-	constructor(private context: MRE.Context,params: ParameterSet) {		
+	constructor(private context: MRE.Context,params: MRE.ParameterSet) {		
 		console.log(`Constructror de MotoTRON`);
 		console.log(params);
 		this.params = new URLSearchParams(params);		
@@ -58,7 +54,8 @@ export default class ModelsManager {
 		} );
 	}	
 
-	private animateTo(model: MRE.Actor, endPoint: MRE.Vector3, initPoint: MRE.Vector3, timeToGo: number, reverse: boolean, reverseTime: number){			
+	private animateTo(model: MRE.Actor, endPoint: MRE.Vector3, initPoint: MRE.Vector3, timeToGo: number,
+		reverse: boolean, reverseTime: number){
 		//goto first point
 		MRE.Animation.AnimateTo(this.context,
 			model,
