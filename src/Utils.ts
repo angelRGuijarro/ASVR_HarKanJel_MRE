@@ -1,6 +1,5 @@
 /* eslint-disable no-mixed-spaces-and-tabs */
 import * as MRE from '@microsoft/mixed-reality-extension-sdk';
-
 /**
  * 
  */
