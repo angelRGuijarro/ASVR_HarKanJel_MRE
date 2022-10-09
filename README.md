@@ -1,10 +1,12 @@
 # ASVR_HarKanJel_MRE
 A collection of MRE (Mixed Reality Extensions) to have fun in AltSpaceVR
 
+
 Once repository is cloned.
 npm install
+sudo npm i --location=global forever
 npm run build
-npm run start
+npm run forever-start
 
 
 On every change to the code
@@ -15,10 +17,5 @@ git pull origin master
 
 
 To stop the service
-First look for the process ID
-ps
-
-Then kill the process
-kill <processID>
-or
-Kill -9 <processID>
+forever list
+forever stop 
