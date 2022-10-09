@@ -1,0 +1,6 @@
+{
+    "runtime":{
+        "majorVersion": "16"
+    },
+    "command": "node ."
+}

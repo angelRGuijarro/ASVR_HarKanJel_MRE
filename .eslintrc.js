@@ -44,7 +44,7 @@ module.exports = {
 			"windows"
 		],
 		"max-classes-per-file": ["warn", 1],
-		"max-len": ["error", 120],
+		"max-len": ["error", 200],
 		"no-div-regex": "error",
 		"no-empty": ["error", { "allowEmptyCatch": true }],
 		"no-labels": "error",
