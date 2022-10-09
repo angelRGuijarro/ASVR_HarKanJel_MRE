@@ -25,8 +25,8 @@
     "build-only": "tsc --build",
     "build-watch": "tsc --build --watch --preserveWatchOutput",
     "lint": "eslint --ext .ts src",
-    "server": "node .",
-    "forever-start": "forever start server",
+    "start": "node .",
+    "forever-start": "forever start built/server.js",
     "start-watch": "nodemon --nolazy --inspect .",
     "debug": "node --nolazy --inspect=9229 .",
     "debug-watch": "npm run build-only && concurrently \"npm run build-watch\" \"nodemon --nolazy --inspect=9229 .\""
