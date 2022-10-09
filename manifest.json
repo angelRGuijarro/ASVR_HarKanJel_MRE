@@ -2,5 +2,5 @@
     "runtime":{
         "majorVersion": "16"
     },
-    "command": "forever node server.js"
+    "command": "node server.js"
 }
