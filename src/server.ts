@@ -13,6 +13,7 @@ import Scoreboard from './scoreboard';
 import TestApp from './test';
 import BoatApp from './boat';
 import CicadaCarApp from './cicadaCar';
+import UFOApp from './UFO';
 import ModelsManager from './modelsManager';
 
 // add some generic error handlers here, to log any exceptions we're not expecting
@@ -46,6 +47,8 @@ function loadApp(context: Context, params: ParameterSet){
 			break;	
 		case 'cicada_car':
 			return new CicadaCarApp(context);
+		case 'UFO':
+			return new UFOApp(context);
 		case 'modelManager':
 			return new ModelsManager(context,params);
 		case 'test':
