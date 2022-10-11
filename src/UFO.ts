@@ -43,7 +43,10 @@ export default class UFOApp {
     				}
     			}
     		});
+    	//Create UFO on click
+    	ExposedUFO.setBehavior(MRE.ButtonBehavior).onClick(user=>this.createFlyingUFO(user));
     	return;
+
     	//create UFO                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
     	const mainUFO = MRE.Actor.CreateFromGltf(this.assetsContainer,
     		{
@@ -60,8 +63,6 @@ export default class UFOApp {
     			}
     		});
         
-    	//Create UFO on click
-    	mainUFO.setBehavior(MRE.ButtonBehavior).onClick(user=>this.createFlyingUFO(user));
     }
     
     private createFlyingUFO(user: MRE.User) {

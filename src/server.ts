@@ -47,10 +47,13 @@ function loadApp(context: Context, params: ParameterSet){
 			break;	
 		case 'cicada_car':
 			return new CicadaCarApp(context);
+			break;
 		case 'UFO':
 			return new UFOApp(context);
+			break;
 		case 'modelManager':
 			return new ModelsManager(context,params);
+			break;
 		case 'test':
 			return new TestApp(context);
 			break;	

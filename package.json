@@ -21,7 +21,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "clean": "tsc --build --clean",
-    "build": "tsc --build && eslint --ext .ts src",
+    "build": "tsc --build && eslint --ext .ts src --fix",
     "build-only": "tsc --build",
     "build-watch": "tsc --build --watch --preserveWatchOutput",
     "lint": "eslint --ext .ts src",
@@ -43,7 +43,7 @@
     "@types/dotenv": "^6.1.0",
     "@types/node": "^10.3.1",
     "dotenv": "^6.2.0",
-    "lerna": "^5.3.0",
-    "node": "file:packages/microsoft-mixed-reality-extension-sdk-0.21.0.tar.gz"
+    "lerna": "^5.3.0",    
+    "mixed-reality-extension-sdk-community": "^0.21.0"
   }
 }
