@@ -16,7 +16,7 @@ export default class ModelsManager {
 	private utils: Utils;
 
 	constructor(private context: MRE.Context,params: MRE.ParameterSet) {		
-		console.log(`Constructror de MotoTRON`);
+		console.log(`Constructror de ModelsManager`);
 		console.log(params);
 		this.params = new URLSearchParams(params);		
 		this.utils = new Utils(this.context);
